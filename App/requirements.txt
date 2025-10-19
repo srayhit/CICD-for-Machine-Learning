@@ -1,2 +1,5 @@
-scitkit-learn
 skops
+scikit-learn
+black
+pandas
+matplotlib
