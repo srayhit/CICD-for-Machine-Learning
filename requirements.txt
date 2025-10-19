@@ -1,3 +1,5 @@
 skops
 scikit-learn
 black
+pandas
+matplotlib
