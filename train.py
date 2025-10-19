@@ -15,43 +15,44 @@ import matplotlib.pyplot as plt
 
 import skops.io as sio
 
-#Loading Data
+# Loading Data
 
-drug_df = pd.read_csv("Data/drug200.csv")   # Load the dataset
-drug_df = drug_df.sample(frac=1)# Shuffle the data
-drug_df.head(3)# Display first 3 rows
+drug_df = pd.read_csv("Data/drug200.csv")  # Load the dataset
+drug_df = drug_df.sample(frac=1)  # Shuffle the data
+drug_df.head(3)  # Display first 3 rows
 
-#Feature Engineering
+# Feature Engineering
 
 X = drug_df.drop("Drug", axis=1).values
 y = drug_df.Drug.values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=125)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=125
+)
 
-cat_col = [1,2,3] # Categorical columns
-num_col = [0, 4] #numerical columns
+cat_col = [1, 2, 3]  # Categorical columns
+num_col = [0, 4]  # numerical columns
 
 transform = ColumnTransformer(
     [
         ("encoder", OrdinalEncoder(), cat_col),
         ("num_imputer", SimpleImputer(strategy="median"), num_col),
-        ("num_scaler", StandardScaler(), num_col)
+        ("num_scaler", StandardScaler(), num_col),
     ]
 )
 
 pipe = Pipeline(
-    steps = [
+    steps=[
         ("preprocessing", transform),
-        ("model", RandomForestClassifier(n_estimators=100, random_state=125))
+        ("model", RandomForestClassifier(n_estimators=100, random_state=125)),
     ]
 )
 pipe.fit(X_train, y_train)
 
-#Running Pipeline for prediciton and evaluation
+# Running Pipeline for prediciton and evaluation
 
 predictions = pipe.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
 f1 = f1_score(y_test, predictions, average="macro")
 
 print(f"Accuracy: {accuracy:.2f}%, F1: {f1:.2f}")
-
